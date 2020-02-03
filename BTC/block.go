@@ -26,8 +26,12 @@ type Block struct {
 	//a.当前区块哈希
 	Hash []byte
 	//b.数据
-	Data []byte
+	//Data []byte
+	//真实的交易数组
+	Transactions []*Transaction
+
 }
+
 
 //实现一个辅助函数，将uint64转成byte
 func UintToByte(num uint64) []byte {
@@ -66,7 +70,7 @@ func Deserialize(data []byte) Block  {
 
 
 //2.创建区块
-func NewBlock(data string, prevBlockHash []byte) *Block {
+func NewBlock(txs []*Transaction, prevBlockHash []byte) *Block {
 	block := Block{
 		Version:    00,
 		PrevHash:   prevBlockHash,
@@ -75,8 +79,10 @@ func NewBlock(data string, prevBlockHash []byte) *Block {
 		Difficulty: 0,
 		Nonce:      0,
 		Hash:       []byte{}, //先填空，后面计算
-		Data:       []byte(data),
+		//Data:       []byte(data),
+		Transactions:txs,
 	}
+	block.MerkelRoot=block.MakeMerkelRoot()
 	//block.SetHash()
 	//创建一个pow对象
 	pow := NewProofOfWork(&block)
@@ -105,7 +111,7 @@ func (block *Block) SetHash() {
 		UintToByte(block.TimeStamp),
 		UintToByte(block.Difficulty),
 		UintToByte(block.Nonce),
-		block.Data,
+		//block.Transactions,
 	}
 	//将二维切片数组连接起来，返回一个以为切片
 	blockInfo := bytes.Join(tmp, []byte{})
@@ -113,4 +119,8 @@ func (block *Block) SetHash() {
 	//2.sha256
 	hash := sha256.Sum256(blockInfo)
 	block.Hash = hash[:]
+}
+//模拟梅克尔根，只对交易的数据做简单拼接，不做二叉树处理
+func (block *Block) MakeMerkelRoot() []byte {
+	return []byte{}
 }

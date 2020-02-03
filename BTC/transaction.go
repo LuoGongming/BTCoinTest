@@ -42,6 +42,19 @@ func (tx *Transaction) SetHash()  {
 	tx.TXID=hash[:]
 }
 
-//2.创建交易方法
+const reward  =12.5
+//2.创建交易方法(挖矿交易)
+func NewCoinbaseTX(address string,data string) *Transaction  {
+	//挖矿交易特点
+	//1.只有一个input
+	//2.无需引用交易id
+	//3.无需引用index
+	//旷工由于挖矿时无需指定签名，所以sig字段可以有矿工自由填写数据，一般是矿池名
+	input:=TXInput{[]byte{},-1,data}
+	output:=TXOutput{reward,address}
+	tx := Transaction{[]byte{}, []TXInput{input}, []TXOutput{output}}
+	tx.SetHash()
+	return &tx
+}
 //3.创建挖矿交易
 //4.根据交易调整程序

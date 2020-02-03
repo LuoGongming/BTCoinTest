@@ -45,7 +45,8 @@ func (pow *ProofOfWork) Run() ([]byte, uint64) {
 			UintToByte(block.TimeStamp),
 			UintToByte(block.Difficulty),
 			UintToByte(nonce),
-			block.Data,
+			//只对区块头做哈希值，区块体通过MerkelRoot影响
+			//block.Data,
 		}
 		//将二维切片数组连接起来，返回一个以为切片
 		blockInfo := bytes.Join(tmp, []byte{})

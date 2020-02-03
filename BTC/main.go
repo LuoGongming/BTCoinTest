@@ -1,7 +1,7 @@
 package main
 
 func main()  {
-	bc:=NewBlockChain()
+	bc:=NewBlockChain("11111111111111")
 	cli:=CLI{bc}
 	cli.Run()
 
