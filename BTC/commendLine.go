@@ -40,10 +40,32 @@ func (cli *CLI) GetBalance(address string) {
 	utxos := cli.bc.FindUTXOs(address)
 	total:=0.0
 	for _,utxo:= range utxos{
-		total+=utxo.value
+		total+=utxo.Value
 	}
 
 	fmt.Printf("\"%s\"的余额为：%f\n",address,total)
 
+
+}
+func (cli *CLI) Send(from string, to string, amount float64, miner string, data string) {
+	fmt.Printf("from:%s\n",from)
+	fmt.Printf("to:%s\n",to)
+	fmt.Printf("amount:%s\n",amount)
+	fmt.Printf("miner:%s\n",miner)
+	fmt.Printf("data:%s\n",data)
+
+	//1.创建挖矿交易
+	coinbase := NewCoinbaseTX(miner, data)
+
+	//2.创建一个普通交易 。
+	tx := NewTransaction(from, to, amount, cli.bc)
+	if tx==nil{
+		fmt.Printf("无效的交易！")
+		return
+	}
+
+	//3.添加到区块
+	cli.bc.AddBlock([]*Transaction{coinbase,tx})
+	fmt.Printf("转账成功！\n")
 
 }
